@@ -1,0 +1,1 @@
+$(function(){	var TableCollection = Backbone.Collection.extend({		url: 'js/table/data/',		model: TableModel,		parse: function(response) {			this.CurrentModel=new TableModel(response.CurrentModel);			return response.Children		}	});	});
