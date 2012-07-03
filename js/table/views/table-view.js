@@ -9,8 +9,8 @@ $(function () {
 			this.$el.html();
 			
 			this.collection.each(function(table) {
-				var tableview=new TableItemView({ model: table });
-				var $tr=tableview.render().$el;            
+				var tableitemview=new TableItemView({ model: table });
+				var $tr=tableitemview.render().$el;            
 				this.$el.append($tr);
 			},this);
 

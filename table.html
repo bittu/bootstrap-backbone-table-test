@@ -56,7 +56,14 @@
 				</div>
 			</div>
 		</div>
-		
+		<script id="tpl-table-list-item" type="text/template">
+            <tr>
+                <td><%= data.col1 %></td>
+                <td><%= data.col2 %></td>
+                <td><%= data.col3 %></td>
+                <td><input type='checkbox' /></td>
+            </tr> 
+		</script>
 		<hr />
 		<footer>
 			<p>&copy; InfoSTEP India Pvt. Ltd. 2012</p>
@@ -67,18 +74,22 @@
 		<script src="js/libs/bootstrap/bootstrap.min.js"></script>
 		
 		<script src="js/libs/underscore.js"></script>
+		<script src="js/libs/backbone.js"></script>
 		
 		<script src="js/bootbox.min.js"></script>
 
 		<script src="js/plugins.js"></script>
 		<script src="js/script.js"></script>
 		
+		<!--
 		<script src="js/table/models/table-model.js"></script>
 		<script src="js/table/collection/table-collection.js"></script>
 		<script src="js/table/views/table-item-view.js"></script>
 		<script src="js/table/views/table-view.js"></script>
 		<script src="js/table/table-app.js"></script>
+		-->
 		
+		<script src="js/table/table.js"></script>
 		
 	</body>
 </html>
