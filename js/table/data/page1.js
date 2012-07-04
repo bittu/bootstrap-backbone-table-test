@@ -16,7 +16,7 @@
 			"col3": "value33"
 		}
 	],
-	"meta": {
+	"page": {
 		"pageP": "null",
 		"pageN": "page2"
 	}

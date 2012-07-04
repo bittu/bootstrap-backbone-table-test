@@ -1,5 +1,5 @@
 {
-	data:[
+	"data":[
 		{
 			"col1": "value41",
 			"col2": "value42",
@@ -16,7 +16,7 @@
 			"col3": "value63"
 		}
 	],
-	"meta": {
+	"page": {
 			"pageP": "page1",
 			"pageN": "page3"
 	}

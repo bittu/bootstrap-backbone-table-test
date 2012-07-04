@@ -15,11 +15,12 @@ $(function () {
 			
 			$.ajax({
 				url: this.url+page+'.js',
+				dataType: 'json',
 				async: false,
 				success: function(response)
 				{
 					//this.CurrentModel=new TableModel(response.CurrentModel);
-					retChild = response;
+					retChild = response;				
 				}
 			});
 			
@@ -33,7 +34,7 @@ $(function () {
 			"click input[type=checkbox]": "publish"
 		},
 		render: function (eventName) {
-			console.log(eventName);
+			
 		   var html=this.template(this.model.toJSON());
 		   this.setElement($(html));
 		   return this;
@@ -44,9 +45,11 @@ $(function () {
 	});
 	
 	var TableView = Backbone.View.extend({
-		tagName: 'table',
 		initialize: function () {
 			this.collection.bind("reset", this.render, this);
+		},
+		events: {
+			"click a[data-rel=page]": "publish"
 		},
 		render: function (eventName) {
 			this.$el.html();
@@ -58,12 +61,20 @@ $(function () {
 			},this);
 
 			return this;
+		},
+		publish: function (e) {
+			
+			if(!$(e.target).parent().hasClass('disabled'))
+				coll.reset(coll.parse($(e.target).data('href').trim()));
+			return false;
+			
+			//console.log($(e.target).data('href'));
 		}
 	});
 	
 	var coll=new TableCollection();
 	var view=new TableView({collection:coll})
-	$("body").append(view.render().el);
+	$(".span12").append(view.render().el);
 	
 	coll.reset(coll.parse('page1'));
 	
