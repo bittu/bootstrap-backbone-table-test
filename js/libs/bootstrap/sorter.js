@@ -23,13 +23,25 @@
 			console.log('sort called - ' + col + ' - ' + order)
 			
 			var tempArray = []
-			,	tempCache = this.cache
+			,	tempCache = $.extend(true, [], this.cache)
+			,	a = []
+			,	b = {}
+			,	tmpCache = []
 			
-			tempCache.sortById = function () {
-				this.sort (function(a,b) {
-					return a[col] - b[col];
-				})
+			for (key in tempCache) {
+				if (input.hasOwnProperty(key)) {
+					b[input[key]] = key;
+        			a.push(tempCache[key][col])
+				}
 			}
+			
+			a.sort()
+			
+			if(order === "desc")
+				a.reverse()
+				
+			
+				tmpCache.push()
 		}
 		
 	,	init : function () {	
@@ -49,7 +61,10 @@
 				for(var j = 0 ; j < lcolumns ; j++) {
 					tempCache[j] = $(row.cells[j]).text()
 				}
-				this.cache[i] = tempCache
+				
+				console.log(i-1)
+				console.log(tempCache)
+				this.cache[i-1] = tempCache
 			}
 			console.log('sorter initialized')
 			console.log(this.cache)
@@ -60,6 +75,12 @@
 			this.sort($(e.target).data('col'), $(e.target).data('ord'))
 		}
 	}
+	
+	
+	/* SORTER PRIVATE METHODS 
+	 * ===================== */
+	 
+	
 	
 	/* SORTER PLUGIN DEFINITION
 	 * ===================== */
@@ -86,7 +107,7 @@
 
 	$(function () {
 		$('table[data-toggle="sort"]').each(function (e) {
-			$(this).sorter({sortOrder: 'desc', sortCol: 2})
+			$(this).sorter({sortOrder: 'desc', sortCol: 3})
 		})
 	})
 	
