@@ -1,50 +1,45 @@
 $(function () {
 
+    "use strict"; // jshint ;_;
+    
 	var TableModel = Backbone.Model.extend({
-		initialize: function(){
+		initialize: function () {
 			console.log('Table-Model initialized');
 		}
-	});
-	
-	var TableCollection = Backbone.Collection.extend({
+	}), TableCollection = Backbone.Collection.extend({
 		url: 'js/table/data/',
 		model: TableModel,
 
-		parse: function(page) {
+		parse: function (page) {
 			var retChild = {};
 			
 			$.ajax({
-				url: this.url+page+'.js',
+				url: this.url + page + '.js',
 				dataType: 'json',
 				async: false,
-				success: function(response)
-				{
+				success: function (response) {
 					//this.CurrentModel=new TableModel(response.CurrentModel);
-					retChild = response;				
+					retChild = response;
 				}
 			});
 			
 			return retChild;
 		}
-	});
-	
-	var TableItemView = Backbone.View.extend({
+	}), coll = new TableCollection(), TableItemView = Backbone.View.extend({
 		template: _.template($('#tpl-table-list-item').html()),
 		events: {
 			"click input[type=checkbox]": "publish"
 		},
 		render: function (eventName) {
 			
-		   var html=this.template(this.model.toJSON());
-		   this.setElement($(html));
-		   return this;
+		    var html = this.template(this.model.toJSON());
+            this.setElement($(html));
+            return this;
 		},
 		publish: function (e) {
 			console.log('checked - ' + e);
 		}
-	});
-	
-	var TableView = Backbone.View.extend({
+	}), TableView = Backbone.View.extend({
 		initialize: function () {
 			this.collection.bind("reset", this.render, this);
 		},
@@ -54,26 +49,24 @@ $(function () {
 		render: function (eventName) {
 			this.$el.html();
 			
-			this.collection.each(function(table) {
-				var tableitemview=new TableItemView({ model: table });
-				var $tr=tableitemview.render().$el;            
+			this.collection.each(function (table) {
+				var tableitemview = new TableItemView({ model: table }), $tr = tableitemview.render().$el;
 				this.$el.append($tr);
-			},this);
+			}, this);
 
 			return this;
 		},
 		publish: function (e) {
 			
-			if(!$(e.target).parent().hasClass('disabled'))
+			if (!$(e.target).parent().hasClass('disabled')) {
 				coll.reset(coll.parse($(e.target).data('href').trim()));
+            }
 			return false;
 			
 			//console.log($(e.target).data('href'));
 		}
-	});
-	
-	var coll=new TableCollection();
-	var view=new TableView({collection:coll})
+	}), view = new TableView({collection : coll});
+    
 	$(".span12").append(view.render().el);
 	
 	coll.reset(coll.parse('page1'));

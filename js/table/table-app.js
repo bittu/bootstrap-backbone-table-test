@@ -1,7 +1,9 @@
-$(function(){
+$(function () {
 
-	var coll=new TableCollection();
-	var view=new TableView({collection:coll})
+    "use strict"; // jshint ;_;
+    
+	var coll = new TableCollection(), view = new TableView({collection : coll});
+    
 	$("body").append(view.render().el);
 
 });
