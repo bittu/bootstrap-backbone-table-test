@@ -1,87 +1,88 @@
+/* ===========================================================
+ * bootstrap-sorter.js v1.0
+ * Copyright 2012 Sandeep Vemula aka bittu
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ========================================================== */
+
 !function ($) {
 	
 	"use strict"; // jshint ;_;
 
-
 	/* SORTER CLASS DEFINITION
 	 * ====================== */
   
-	var Sorter = function (el) {
+	var ASC = "asc"
+	,	DESC = "desc"
+	,	Sorter = function (el, options) {
 		this.table = el
+		this.options = options
 		this.init()
 		$(el).on('click', 'th', $.proxy(this.clickSort, this))
-		console.log('sort created')
 	}
 	
 	Sorter.prototype = {
 	
 		constructor : Sorter
 		
-	,	cache : []
-		
 	,	sort : function (col, order) {
-			console.log('sort called - ' + col + ' - ' + order)
 			
-			var tempArray = []
-			,	tempCache = $.extend(true, [], this.cache)
-			,	a = []
-			,	b = {}
-			,	tmpCache = []
+			var rows = $(this.table).find('tbody > tr').get()
+			,	$table = $(this.table)
+			,	$th = $table.find('th').eq(col)
 			
-			for (key in tempCache) {
-				if (input.hasOwnProperty(key)) {
-					b[input[key]] = key;
-        			a.push(tempCache[key][col])
-				}
-			}
+			$.each(rows, function(index, row) {
+				row.sortText = $(row).children('td').eq(col).text()
+			})
 			
-			a.sort()
+			rows.sort(function(a, b) {
+				return a.sortText > b.sortText
+			})
 			
-			if(order === "desc")
-				a.reverse()
-				
+			if(order === DESC)
+				rows.reverse()
+
+			$.each(rows, function(index, row) {
+				console.log($table.one($.support.transition.end, $table.children('tbody').append(row)))
+				row.sortText = null
+			})
 			
-				tmpCache.push()
+			$table.find('th').filter(function(){return $(this).data('ord')}).removeData('ord').find('i').remove()
+			$th.data({'ord' : order === ASC ? DESC : ASC})
+			$th.append('<i class="pull-right ' + ($th.data('ord') === ASC ? 'icon-chevron-up' : 'icon-chevron-down') + '"></i>')
 		}
 		
 	,	init : function () {	
-			var	lrows = this.table.rows.length
-			,	lcolumns = this.table.rows[0].cells.length
-			,	i = 0
+			var $this = this
 			
-			$(this.table).find('th').each(function(){
-				$(this).data({'col': i++, 'ord': 'asc'}).css({'cursor' : 'pointer'})
+			$(this.table).find('th').each(function(column){
+				var $th = $(this)
+				$th.data({'col': column})
+				if($this.options.sortAll || $th.data('sort')) $th.css({'cursor' : 'pointer'})
 			})
-			
-			i = 1
-			for( ; i < lrows; i++) {
-				var row = this.table.rows[i]
-				,	tempCache = {}
-				
-				for(var j = 0 ; j < lcolumns ; j++) {
-					tempCache[j] = $(row.cells[j]).text()
-				}
-				
-				console.log(i-1)
-				console.log(tempCache)
-				this.cache[i-1] = tempCache
-			}
-			console.log('sorter initialized')
-			console.log(this.cache)
+
 		}
-		
 	,	clickSort : function (e) {
-			console.log('sort col clicked - ' + $(e.target))
-			this.sort($(e.target).data('col'), $(e.target).data('ord'))
+			if (this.options.sortAll || $(e.target).data('sort'))
+				this.sort($(e.target).data('col'), $(e.target).data('ord') === undefined ? ASC : $(e.target).data('ord'))
 		}
 	}
 	
 	
 	/* SORTER PRIVATE METHODS 
 	 * ===================== */
-	 
-	
-	
+
+		
 	/* SORTER PLUGIN DEFINITION
 	 * ===================== */
 	
@@ -90,14 +91,15 @@
 			var $this = $(this)
 			, 	data = $this.data('sort')
 			, 	options = $.extend({}, $.fn.sorter.defaults, $this.data(), typeof option == 'object' && option)
-			if (!data) $this.data('sort', (data = new Sorter(this)))
-			data['sort'](options.sortCol, options.sortOrder)			
+			if (!data) $this.data('sort', (data = new Sorter(this, options)))
+			if(options.sortAll || $this.find('th').eq(options.sortCol).data('sort')) data['sort'](options.sortCol, options.sortOrder)			
 		})
 	}
 	
 	$.fn.sorter.defaults = {
-		sortOrder: 'asc'
+		sortOrder: ASC
 	, 	sortCol: 0
+	,	sortAll: true
 	}
 	
 	$.fn.sorter.Constructor = Sorter
@@ -107,7 +109,7 @@
 
 	$(function () {
 		$('table[data-toggle="sort"]').each(function (e) {
-			$(this).sorter({sortOrder: 'desc', sortCol: 3})
+			$(this).sorter()
 		})
 	})
 	
